@@ -4,15 +4,30 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Scanner;  
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.nio.file.Paths;
 import java.nio.file.Path; 
 
 public class TAscheduler  {  
+    public static int numClasses = 21;
     public static void main(String[] args) {
         List<Schedule> schedules = readScheduleFromCSV("schedule.csv");
         List<Student> students = readStudentFromCSV("students.csv");
-        System.out.println(schedules.get(0).getCategory());
-        System.out.println(students.get(0).getId());
+        for(int i = 0; i < numClasses; i++){
+            System.out.println(students.get(0).hasTaken(i)); //for debugging
+        }
+
+        int[] possibleTas =  new int[numClasses];
+        for(int i = 0; i < numClasses; i++){
+            possibleTas[i] = numPossible(i);
+        }
+
+        Arrays.sort(possibleTas);
+
+        //Get a list of students that can TA each class starting with the class with the least amount of students avail.
+        //Compare students to eachother to decide who to assign to the class
+        //go the the next class, rinse and repeate for each class
+
     }
 
     private static List<Schedule> readScheduleFromCSV(String fileName) {
@@ -26,14 +41,12 @@ public class TAscheduler  {
 
             while (line != null) {
                 //deliminates the data using ","
-                String[] data = line.split(",");
-
+                String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                 //creates a schedule object form the data using helper method
                 Schedule schedule = createScheduleObj(data);
 
                 //adds the schedule object to the array list
                 schedules.add(schedule);
-
                 line = br.readLine();
             }
         } catch (IOException ioe) {
@@ -54,18 +67,16 @@ public class TAscheduler  {
             line = br.readLine();
 
             while (line != null) {
+                //System.out.println(line) //for debugging
+
                 //deliminates the data using ","
-                //System.out.println(line); for debugging
-                //split is giving different lengths of arrays when we beleive it shouldn't
-                //need to fogure out how to split the data consistently for every line in the file
-                String[] data = line.split(",");
+                String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1); //for debugging
 
                 //creates a schedule object form the data using helper method
                 Student student = createStudentObj(data);
 
                 //adds the schedule object to the array list
                 students.add(student);
-
                 line = br.readLine();
             }
         } catch (IOException ioe) {
@@ -77,10 +88,7 @@ public class TAscheduler  {
     private static Schedule createScheduleObj(String[] data) {
         int cat = Integer.parseInt(data[1]);
         String sec = data[2];
-
-        //currently not the final solution to this problem
-        String days = data[6].replaceAll(" ", "");
-
+        String days = data[6].replaceAll(" ", ""); //maybe not the final solution to this problem?
         String sTime = data[7];
         String eTime = data[8];
 
@@ -92,13 +100,14 @@ public class TAscheduler  {
         String gradQ = data[4];
         int gradY = Integer.parseInt(data[5]);
         int taType = Integer.parseInt(data[6]);
-        Boolean eburg = false;
+        boolean eburg = false;
+        
         if (data[7] == "Yes")
         {
             eburg = true;
         }
 
-        Boolean [][] dates = new Boolean[4][8];
+        boolean [][] dates = new boolean[4][8];
         int index = 8;
         for (int i = 0; i < dates.length; i++) 
         {
@@ -113,21 +122,31 @@ public class TAscheduler  {
         }
 
         index = 42;
-        Boolean [] taken = new Boolean[20];
+        boolean [] taken = new boolean[numClasses];
 
-        // System.out.println(data.length); for debugging
-        // for (int i = 0; i < taken.length; i++)
-        // {
-        //     if (data[index] == "X")
-        //     {
-        //         taken[i] = true;
-        //     }
-        //     index++;
-        // }
+        for (int i = 0; i < taken.length; i++)
+        {
+            taken[i] = false;
+            if (data[index].equals("X"))
+            {
+                taken[i] = true;
+            }
+            index++;
+        }
 
         return new Student(id, gradQ, gradY, taType, eburg, dates, taken);
-
     
     }
+
+    private static int numPossible(int classNum) {
+        //Takes in a class number (0-20) and returns how many students can TA that class
+    }
+
+    private static List<Student> possibleStudents(int classNum) {
+        //Takes in a class number (0-20) and returns a list of students who can TA the class
+    }
+
+
+
 }
 
