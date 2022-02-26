@@ -1,4 +1,6 @@
-public class Student {
+import java.lang.invoke.SwitchPoint;
+
+public class Student implements Comparable<Student>{
     // fields
     private int id;
     private String gradQ;
@@ -64,5 +66,29 @@ public class Student {
         // classes are usually offer at the same time in CS Dep
         // May want to have parameter for day as well as timeslot
         return dates[day][timeslot];
+    }
+
+    @Override
+    // student is "greater than" another student if they graduate later.
+    public int compareTo(Student other) {
+        if(this.gradY - other.gradY == 0) {
+            return assignQValue(this.gradQ) - assignQValue(other.gradQ);
+        }else{
+            return this.gradY - other.gradY;
+        }
+    }
+
+    private int assignQValue(String gradQ) {
+        switch(gradQ) {
+            case "Winter":
+                return 1;
+            case "Spring":
+                return 2;
+            case "Summer":
+                return 3;
+            case "Fall":
+                return 4;
+        }
+
     }
 }
