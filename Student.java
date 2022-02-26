@@ -6,15 +6,17 @@ public class Student implements Comparable<Student>{
     private String gradQ;
     private int gradY;
     private int taType;
-    // represent classes currently offered. CS102 idx 0; CS492 idx 44
-    private Boolean eburg;
-    // 4x7 array representing day and timeslots  
-    private Boolean [][] dates; 
-    private Boolean [] taken;
+    private boolean eburg;
+    // 4x8 array representing day and timeslots  
+    private boolean [][] dates; 
+    //array to hold info for what a student has taken.
+    //true if the student has taken the class
+    private boolean [] taken;
+    private boolean isAssigned; 
     
 
     // constructor
-    public Student (int id, String gradQ, int gradY, int ta, Boolean eb, Boolean [][] dates, Boolean [] taken) {
+    public Student (int id, String gradQ, int gradY, int ta, boolean eb, boolean [][] dates, boolean [] taken) {
         this.id = id;
         this.gradQ = gradQ;
         this.gradY = gradY;
@@ -22,6 +24,7 @@ public class Student implements Comparable<Student>{
         this.eburg = eb;
         this.taken = taken;
         this.dates = dates;
+        this.isAssigned = false;
     }
 
     public int getId() { 
@@ -52,17 +55,17 @@ public class Student implements Comparable<Student>{
         this.taType = type;
     }
 
-    public Boolean inEburg() {
+    public boolean inEburg() {
         return this.eburg;
     }
 
     // return true if a student has takened the given class
-    public Boolean hasTaken (int cla) {
+    public boolean hasTaken (int cla) {
         return taken[cla];
     }
 
     // return truee if student does not have a time conflict
-    public Boolean isFree (int day, int timeslot) {
+    public boolean isFree (int day, int timeslot) {
         // classes are usually offer at the same time in CS Dep
         // May want to have parameter for day as well as timeslot
         return dates[day][timeslot];
