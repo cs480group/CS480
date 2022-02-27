@@ -5,6 +5,8 @@ public class Schedule
 	private String days;
 	private String sTime;
 	private String eTime;
+	private boolean firstTA;
+	private boolean secondTA;
 	
 	public Schedule(int category, String section, String days, String sTime, String eTime)
 	{
@@ -13,6 +15,8 @@ public class Schedule
 		this.days = days;
 		this.sTime = sTime;
 		this.eTime = eTime;
+		this.firstTA = false;
+		this.secondTA = false;
 	}
 
 	public int getCategory() 
@@ -63,5 +67,25 @@ public class Schedule
 	public void seteTime(String eTime) 
 	{
 		this.eTime = eTime;
+	}
+	
+	public boolean getFirstTA()
+	{
+		return firstTA;
+	}
+
+	public void setFirstTA(boolean input)
+	{
+		this.firstTA = input;
+	}
+
+	public boolean getSecondTA()
+	{
+		return secondTA;
+	}
+
+	public void setSecondTA(boolean input)
+	{
+		this.secondTA = input;
 	}
 }
