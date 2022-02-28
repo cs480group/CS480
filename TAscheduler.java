@@ -10,52 +10,59 @@ import java.nio.file.Paths;
 import java.nio.file.Path; 
 
 public class TAscheduler  {  
-    public static int numClasses = 21;
+    public static int numClassesNoSec = 21;
     private static List<Student> allStudents;
     private static List<Student> remainingStudents;
     private static List<Schedule> classes;
-    private static final HashMap<Integer,Integer> classMap = new HashMap<Integer,Integer>();
     private static boolean firstRoundDone = false;
     private static boolean secondRoundDone = false;
-    static {
-    	classMap.put(0, 102);
-    	classMap.put(1, 105);
-    	classMap.put(2, 107);
-    	classMap.put(3, 109);
-    	classMap.put(4, 110);
-    	classMap.put(5, 111);
-    	classMap.put(6, 112);
-    	classMap.put(7, 301);
-    	classMap.put(8, 302);
-    	classMap.put(9, 311);
-    	classMap.put(10, 312);
-    	classMap.put(11, 361);
-    	classMap.put(12, 362);
-    	classMap.put(13, 380);
-    	classMap.put(14, 420);
-    	classMap.put(15, 427);
-    	classMap.put(16, 430);
-    	classMap.put(17, 440);
-    	classMap.put(18, 467);
-    	classMap.put(19, 470);
-    	classMap.put(20, 480);
-    }
     
     public static void main(String[] args) {
         /*  classes = list of all Schedule objects from a file
             allStudents = list of all Student objects from a file
-            remainingStudents = list of Student objects that represents students who have not been assigned a TA position */
+            remainingStudents = list of Student objects that represents students who have not been assigned a TA position
+            currCandidates = the current list of Students who are being considered to assign to a class during assignment rounds
+            allPossibleTas = an array to keep track of how many TAs are avail to teach each class section */
         classes = readScheduleFromCSV("schedule.csv");
         allStudents = readStudentFromCSV("students.csv");
         remainingStudents = readStudentFromCSV("students.csv");
+        List<Student> currCandidates;
+        int[] allPossibleTas =  new int[classes.size()];
+
+        // // UNIT TEST to see if the dates 2d array is properly filled in a Schedule object
+        // int testIndex = 1;
+        // boolean[][] dates = classes.get(testIndex).getDates();
+        // if(dates != null){
+        //     System.out.println("CS " + classes.get(testIndex).getCategory() + " Section " + classes.get(testIndex).getSection() + " dates array info:");
+        //     for(int i = 0; i < dates.length; i++){
+        //         for(int j = 0; j < dates[i].length; j++){
+        //             if(dates[i][j] == true) {
+        //                 System.out.println("Day " + i + " @TimeIndex: " + j + " There is class");
+        //             }else{
+        //                 System.out.println("no class");
+        //             }
+        //         }
+        //     }
+        // }else{
+        //     System.out.println("CS " + classes.get(testIndex).getCategory() + " Section " + classes.get(testIndex).getSection() + " Has no class times given");
+        // } 
         
-        // Useful for Debugging
-        System.out.println("Number of allStudents: " + allStudents.size());
-        System.out.println("Number of remainingStudents: " + remainingStudents.size());
-        System.out.println();
+        // // UNIT TEST to see if the dates 2d array is properly filled in a Student object
+        // int testIndex = 0;
+        // System.out.println("Looking at student: " + allStudents.get(testIndex).getName());
+        // boolean[][] dates = allStudents.get(testIndex).getDates();
+        // for(int i = 0; i < dates.length; i++){
+        //     for(int j = 0; j < dates[i].length; j++){
+        //         if(dates[i][j] == true) {
+        //             System.out.println("Day " + i + " @TimeIndex: " + j + " Student is Available");
+        //         }else{
+        //             System.out.println("not avail");
+        //         }
+        //     }
+        // }
 
         // // UNIT TEST to check that hasTaken works and that the student objects are uniform
-        // for(int i = 0; i < numClasses; i++){
+        // for(int i = 0; i < numClassesNoSec; i++){
         //     System.out.println(allStudents.get(0).hasTaken(i)); 
         // }
 
@@ -66,29 +73,31 @@ public class TAscheduler  {
         // }
 
         // // UNIT TEST to check that numPossible works
-        // int[] possibleTas =  new int[numClasses];
-        // for(int i = 0; i < numClasses; i++){
+        // int[] possibleTas =  new int[classes.size()];
+        // for(int i = 0; i < classes.size(); i++){
         //     possibleTas[i] = numPossible(i);
         //     System.out.println(possibleTas[i]); 
         // }
         
-
         //Get a list of students that can TA each class starting with the class with the least amount of students avail.
         //Compare students to eachother to decide who to assign to the class, go the the next class, rinse and repeate for each class
-        List<Student> currCandidates;
-        int[] allPossibleTas =  new int[numClasses];
         
+        // Part 1 UNIT TEST to help track of the number of students before and after assignment rounds
+        System.out.println("Number of allStudents: " + allStudents.size());
+        System.out.println("Number of remainingStudents: " + remainingStudents.size());
+        System.out.println();
+
         //first round
         while(!firstRoundDone) {
-            for(int i = 0; i < numClasses; i++) {
-                allPossibleTas[i] = numPossible(i);
+            for(int i = 0; i < classes.size(); i++) {
+                allPossibleTas[i] = numPossible(classes.get(i));
             }
 
             //gets the class index that has the lowest number of possible TA's
-            int currClass = classSelect(allPossibleTas, 1);
+            Schedule currClass = classSelect(allPossibleTas, 1);
             
             //if there are no more classes to assign a first TA to, break
-            if(currClass == -1) {
+            if(currClass == null) {
                 break;
             }
 
@@ -102,15 +111,8 @@ public class TAscheduler  {
             }
 
             assignStudent(bestOption, currClass, 1);
-            allPossibleTas[currClass] = Integer.MAX_VALUE;
+            //allPossibleTas[currClass] = Integer.MAX_VALUE; DOESNT MATTER ANYMORE??
         }
-
-        // // UNIT TEST to see the students who have been assigned to a class after the first round
-        // for(int i = 0; i < allStudents.size(); i++) {
-        //     if(allStudents.get(i).getIsAssigned() == true) {
-        //         System.out.println("Student ID: " + allStudents.get(i).getId() + "    Assigned to: " + classMap.get(allStudents.get(i).getAssignedClass()));
-        //     }
-        // }
 
         // Useful for Debugging round 1
         System.out.println("First round done.");
@@ -120,15 +122,15 @@ public class TAscheduler  {
 
         //second round
         while(!secondRoundDone) {
-            for(int i = 0; i < numClasses; i++) {
-                allPossibleTas[i] = numPossible(i);
+            for(int i = 0; i < classes.size(); i++) {
+                allPossibleTas[i] = numPossible(classes.get(i));
             }
-            
+
             //gets the class index that has the lowest number of possible TA's
-            int currClass = classSelect(allPossibleTas, 2);
+            Schedule currClass = classSelect(allPossibleTas, 2);
             
             //if there are no more classes to assign a first TA to, break
-            if(currClass == -1) {
+            if(currClass == null) {
                 break;
             }
 
@@ -139,35 +141,43 @@ public class TAscheduler  {
                 for(int i = 1; i < currCandidates.size(); i++){
                     bestOption = bestOption.compareTo(currCandidates.get(i));
                 }
-            } 
+            }
 
             assignStudent(bestOption, currClass, 2);
-            allPossibleTas[currClass] = Integer.MAX_VALUE;
+            //allPossibleTas[currClass] = Integer.MAX_VALUE; DOESNT MATTER ANYMORE??
         }
-
-        // Useful for 2ebugging round 2
+        // Useful for debugging round 2
         System.out.println("Second round done.");
         System.out.println("Number of allStudents: " + allStudents.size());
         System.out.println("Number of remainingStudents: " + remainingStudents.size());
+        System.out.println("Number of total classes with unique sections: " + classes.size());
         System.out.println();
 
-        // UNIT TEST to see the students who have been assigned to a class after both rounds
-        System.out.println("Assigned Students");
-        for(int i = 0; i < allStudents.size(); i++) {
-            if(allStudents.get(i).getIsAssigned() == true) {
-                System.out.println("Student ID: " + allStudents.get(i).getId() + 
-                                    "    Student Name: " + allStudents.get(i).getLastN() + ", " + allStudents.get(i).getFirstN());
-                System.out.println("    Assigned to: CS" + classMap.get(allStudents.get(i).getAssignedClass()));
-            }
-        }
+        // // UNIT TEST to see if the student objects store info about which class the student has been assigned to
+        // System.out.println("Assigned Students");
+        // for(int i = 0; i < allStudents.size(); i++) {
+        //     if(allStudents.get(i).getIsAssigned() == true) {
+        //         System.out.println("Student ID: " + allStudents.get(i).getId() + "  Student Name: " + allStudents.get(i).getName());
+        //         System.out.println("    Assigned to: CS" + allStudents.get(i).getAssignedClass().getCategory());
+        //         System.out.println("    Has taken it? " + allStudents.get(i).hasTaken(allStudents.get(i).getAssignedClass()));
+        //     }
+        // }
+
+        // // UNIT TEST to see if the class ojects store info about which students have been assigned to the class
+        // System.out.println("Classes and their TA's");
+        // for(int i = 0; i < classes.size(); i++) {
+        //     System.out.println("CS: " + classes.get(i).getCategory() + "Section: " + classes.get(i).getSection() + " has the following TA's");
+        //     System.out.println("        - " + classes.get(i).getTANames()[0]);
+        //     System.out.println("        - " + classes.get(i).getTANames()[1]);
+        // }
 
     }
 
     private static List<Schedule> readScheduleFromCSV(String fileName) {
-        List<Schedule> schedules = new ArrayList<>();
+        List<Schedule> classes = new ArrayList<>();
         Path pathToFile = Paths.get(fileName);
 
-        try (BufferedReader br = Files.newBufferedReader(pathToFile, StandardCharsets.US_ASCII)){
+        try (BufferedReader br = Files.newBufferedReader(pathToFile, StandardCharsets.US_ASCII)) {
             //reads first line, then skips over it
             String line = br.readLine();
             line = br.readLine();
@@ -176,16 +186,16 @@ public class TAscheduler  {
                 //deliminates the data using ","
                 String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                 //creates a schedule object form the data using helper method
-                Schedule schedule = createScheduleObj(data);
+                Schedule schedule = createScheduleObj(data, classes.size());
 
                 //adds the schedule object to the array list
-                schedules.add(schedule);
+                classes.add(schedule);
                 line = br.readLine();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return schedules;
+        return classes;
     }
 
     //identical to readScheduleFromCSV but for reading student info
@@ -219,14 +229,32 @@ public class TAscheduler  {
     }
 
     //creates the schedule objects given the data from a CSV file line
-    private static Schedule createScheduleObj(String[] data) {
+    private static Schedule createScheduleObj(String[] data, int classIndex) {
         int cat = Integer.parseInt(data[1]);
         String sec = data[2];
-        String days = data[6].replaceAll(" ", ""); //maybe not the final solution to this problem?
-        String sTime = data[7];
-        String eTime = data[8];
+        String days = data[5].replaceAll(" ", "");
+        String sTime = data[6];
+        //String eTime = data[7]; //IMPORTANT if classes can be longer than an hr?????
+        boolean [][] dates = new boolean[4][8];
+        boolean [] dayIndicator = getClassDays(days);
 
-        return new Schedule(cat, sec, days, sTime, eTime);
+        //populates the 2d dates array
+		if(days.isEmpty()){
+			dates = null;
+		}else {
+            //System.out.println("Assigning dates for CS " + cat + " " + sec + ". sTime substring: " + sTime.substring(0,2)); //FOR DEBUGGING
+			switch(sTime.substring(0,2)) {
+                case "8:": assignDates(dates, dayIndicator, 0); break;
+                case "9:": assignDates(dates, dayIndicator, 1); break;
+                case "10": assignDates(dates, dayIndicator, 2); break;
+                case "11": assignDates(dates, dayIndicator, 3); break;
+                case "12": assignDates(dates, dayIndicator, 4); break;
+                case "1:": assignDates(dates, dayIndicator, 5); break;
+                case "2:": assignDates(dates, dayIndicator, 6); break;
+                case "3:": assignDates(dates, dayIndicator, 7); break;
+            }
+		}
+        return new Schedule(cat, sec, dates, classIndex);
     }
 
     //creates the student objects given the data from a CSV file line
@@ -238,21 +266,17 @@ public class TAscheduler  {
         int gradY = Integer.parseInt(data[5]);
         int taType = Integer.parseInt(data[6]);
         boolean eburg = false;
-        boolean [] taken = new boolean[numClasses];
+        boolean [] taken = new boolean[numClassesNoSec];
         boolean [][] dates = new boolean[4][8];
         int index = 8;
         
-        if (data[7] == "Yes")
-        {
+        if (data[7] == "Yes") {
             eburg = true;
         }
 
-        for (int i = 0; i < dates.length; i++) 
-        {
-            for (int k = 0; k < dates[i].length; k++) 
-            {
-                if (data[index] == "Open") 
-                {
+        for (int i = 0; i < dates.length; i++) {
+            for (int k = 0; k < dates[i].length; k++) {
+                if (data[index].equals("Open")) {
                     dates[i][k] = true;
                 }
                 index++;
@@ -260,11 +284,9 @@ public class TAscheduler  {
         }
 
         index = 42;
-        for (int i = 0; i < taken.length; i++)
-        {
+        for (int i = 0; i < taken.length; i++) {
             taken[i] = false;
-            if (data[index].equals("X"))
-            {
+            if (data[index].equals("X")) {
                 taken[i] = true;
             }
             index++;
@@ -272,42 +294,30 @@ public class TAscheduler  {
         return new Student(firstN, lastN, id, gradQ, gradY, taType, eburg, dates, taken);
     }
 
-    //Takes in a class number (0-20) and returns how many students can TA that class
-    private static int numPossible(int classNum) {
+    //Takes in a class object and returns how many students can TA that class
+    private static int numPossible(Schedule givenClass) {
     	int num = 0;
     	for(int i = 0; i < remainingStudents.size(); i++) {
-    		if(remainingStudents.get(i).hasTaken(classNum)) {
+    		if(remainingStudents.get(i).hasTaken(givenClass) && remainingStudents.get(i).isFree(givenClass.getDates())) {
     			num++;
     		}
     	}
 		return num;
     }
-
-    // //Takes in a class NUMBER and returns a list of students who can TA the class
-    // private static List<Student> possibleStudents_classNum(int classNum) {
-    // 	int Index = classMap.get(classNum);
-    // 	List<Student> qualified = new ArrayList<>();
-    // 	for(int i = 0; i < remainingStudents.size(); i++) {
-    // 		if(remainingStudents.get(i).hasTaken(Index)) {
-    // 			qualified.add(remainingStudents.get(i));
-    // 		}
-    // 	}
-	// 	return qualified;
-    // }
     
-    //Takes in a class INDEX and returns a list of students who can TA the class
-    private static List<Student> possibleStudents(int Index) {
+    //Takes in a class object and returns a list of students who can TA the class
+    private static List<Student> possibleStudents(Schedule givenClass) {
     	List<Student> qualified = new ArrayList<>();
     	for(int i = 0; i < remainingStudents.size(); i++) {
-    		if(remainingStudents.get(i).hasTaken(Index)) {
+    		if(remainingStudents.get(i).hasTaken(givenClass) && remainingStudents.get(i).isFree(givenClass.getDates())) {
     			qualified.add(remainingStudents.get(i));
     		}
     	}
 		return qualified;
     }
 
-    //returns the class index for the class that has the lowest amount of TA's avail and hasnt been assigned in the given round
-    private static int classSelect(int[] possibleTAs, int roundNum) {
+    //returns the Schedule object for the class that has the lowest amount of TA's avail and hasnt been assigned in the given round
+    private static Schedule classSelect(int[] possibleTAs, int roundNum) {
         int index = 0;
         int lowestValue = Integer.MAX_VALUE;
         for(int i = 0; i < possibleTAs.length; i++) {
@@ -324,16 +334,18 @@ public class TAscheduler  {
             }
         }
         if(lowestValue == Integer.MAX_VALUE) {
-            return -1;
+            return null;
         }
-        return index;
+        return classes.get(index);
     }
 
-    private static void assignStudent(Student student, int currClass, int roundNum) {
+    private static void assignStudent(Student student, Schedule currClass, int roundNum) {
         if(roundNum == 1){
-            classes.get(currClass).setFirstTA(true);
+            currClass.setFirstTA(true);
+            currClass.setTAName(student.getName(), 1);
         }else {
-            classes.get(currClass).setSecondTA(true);
+            currClass.setSecondTA(true);
+            currClass.setTAName(student.getName(), 2);
         }
         int studentID = student.getId();
         for(int i = 0; i < allStudents.size(); i++) {
@@ -349,5 +361,38 @@ public class TAscheduler  {
             }
         }
         remainingStudents.remove(removableIndex);
+    }
+
+    private static boolean[] getClassDays(String days) {
+        boolean [] results = new boolean[4];
+        //System.out.println("Days given to getClassDays switch: " + days); //FOR DEBBUGGING
+        switch(days) {
+            case("M"): results[0] = true; break;
+            case("MT"): results[0] = true; results[1] = true; break;
+            case("MW"): results[0] = true; results[2] = true; break;
+            case("MTH"): results[0] = true; results[3] = true; break;
+            case("MTW"): results[0] = true; results[1] = true; results[2] = true; break;
+            case("MTTH"): results[0] = true; results[1] = true; results[3] = true; break;
+            case("MWTH"): results[0] = true; results[2] = true; results[3] = true; break;
+            case("MTWTH"): results[0] = true; results[1] = true; results[2] = true; results[3] = true; break;
+            case("T"): results[1] = true; break;
+            case("TW"): results[1] = true; results[2] = true; break;
+            case("TTH"): results[1] = true; results[3] = true; break;
+            case("TWTH"): results[1] = true; results[2] = true; results[3] = true; break;
+            case("W"): results[2] = true; break;
+            case("WTH"): results[2] = true; results[3] = true; break;
+            case("TH"): results[3] = true; break;
+        }
+        return results;
+    }
+
+    //helper function to fill in the 2d dates array for Schedule objects
+    private static void assignDates(boolean[][] result, boolean[] dayIndicator, int timeSlot) {
+        for(int i = 0; i < dayIndicator.length; i++) {
+            if (dayIndicator[i] == true) {
+                result[i][timeSlot] = true;
+                //System.out.println("DayIndex : " + i + " timeSlot: " + timeSlot);  //FOR DEBUGGING
+            }
+        }
     }
 }
