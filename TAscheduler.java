@@ -2,10 +2,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.Scanner;  
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.nio.file.Paths;
 import java.nio.file.Path; 
 
@@ -14,8 +11,6 @@ public class TAscheduler  {
     private static List<Student> allStudents;
     private static List<Student> remainingStudents;
     private static List<Schedule> classes;
-    private static boolean firstRoundDone = false;
-    private static boolean secondRoundDone = false;
     
     public static void main(String[] args) {
         /*  classes = list of all Schedule objects from a file
@@ -61,9 +56,9 @@ public class TAscheduler  {
         //     }
         // }
 
-        // // UNIT TEST to check that hasTaken works and that the student objects are uniform
+        // // UNIT TEST to check that canTA works and that the student objects are uniform
         // for(int i = 0; i < numClassesNoSec; i++){
-        //     System.out.println(allStudents.get(0).hasTaken(i)); 
+        //     System.out.println(allStudents.get(0).canTA(i)); 
         // }
 
         // // UNIT TEST to check that possibleStudents works 
@@ -78,17 +73,15 @@ public class TAscheduler  {
         //     possibleTas[i] = numPossible(i);
         //     System.out.println(possibleTas[i]); 
         // }
-        
-        //Get a list of students that can TA each class starting with the class with the least amount of students avail.
-        //Compare students to eachother to decide who to assign to the class, go the the next class, rinse and repeate for each class
-        
+           
         // Part 1 UNIT TEST to help track of the number of students before and after assignment rounds
         System.out.println("Number of allStudents: " + allStudents.size());
-        System.out.println("Number of remainingStudents: " + remainingStudents.size());
+        System.out.println("Number of total classes with unique sections: " + classes.size());
         System.out.println();
 
-        //first round
-        while(!firstRoundDone) {
+        //first assignment round
+        while(true) {
+            //gets the number of TA's that could possibly TA each class section
             for(int i = 0; i < classes.size(); i++) {
                 allPossibleTas[i] = numPossible(classes.get(i));
             }
@@ -113,14 +106,14 @@ public class TAscheduler  {
             assignStudent(bestOption, currClass, 1);
         }
 
-        // Useful for Debugging round 1
+        // Part 2 UNIT TEST to help track of the number of students before and after assignment rounds
         System.out.println("First round done.");
         System.out.println("Number of allStudents: " + allStudents.size());
-        System.out.println("Number of remainingStudents: " + remainingStudents.size());
+        System.out.println("Number of students who still want to be assigned: " + remainingStudents.size());
         System.out.println();
 
         //second round
-        while(!secondRoundDone) {
+        while(true) {
             for(int i = 0; i < classes.size(); i++) {
                 allPossibleTas[i] = numPossible(classes.get(i));
             }
@@ -145,30 +138,37 @@ public class TAscheduler  {
             assignStudent(bestOption, currClass, 2);
         }
 
-        // Part 2 UNIT TEST to help track of the number of students before and after assignment rounds
+        // Part 3 UNIT TEST to help track of the number of students before and after assignment rounds
         System.out.println("Second round done.");
         System.out.println("Number of allStudents: " + allStudents.size());
-        System.out.println("Number of remainingStudents: " + remainingStudents.size());
-        System.out.println("Number of total classes with unique sections: " + classes.size());
+        System.out.println("Number of students who still want to be assigned: " + remainingStudents.size());
         System.out.println();
 
-        // // UNIT TEST to see if the student objects store info about which class the student has been assigned to
-        // System.out.println("Assigned Students");
-        // for(int i = 0; i < allStudents.size(); i++) {
-        //     if(allStudents.get(i).getIsAssigned() == true) {
-        //         System.out.println("Student ID: " + allStudents.get(i).getId() + "  Student Name: " + allStudents.get(i).getName());
-        //         System.out.println("    Assigned to: CS" + allStudents.get(i).getAssignedClass().getCategory());
-        //         System.out.println("    Has taken it? " + allStudents.get(i).hasTaken(allStudents.get(i).getAssignedClass()));
-        //     }
-        // }
+        // UNIT TEST to see if the student objects store info about which class the student has been assigned to
+        System.out.println("-------------ASSIGNED STUDENTS-------------");
+        for(int i = 0; i < allStudents.size(); i++) {
+            if(allStudents.get(i).getIsAssigned() == true) {
+                System.out.println("Student ID: " + allStudents.get(i).getId() + "  Student Name: " + allStudents.get(i).getName());
+                System.out.println("    Assigned to: CS" + allStudents.get(i).getAssignedClass().getCategory());
+                System.out.println("    Has taken it? " + allStudents.get(i).hasTaken(allStudents.get(i).getAssignedClass()));
+            }
+        }
+        System.out.println();
 
-        // // UNIT TEST to see if the class ojects store info about which students have been assigned to the class
-        // System.out.println("Classes and their TA's");
-        // for(int i = 0; i < classes.size(); i++) {
-        //     System.out.println("CS: " + classes.get(i).getCategory() + "Section: " + classes.get(i).getSection() + " has the following TA's");
-        //     System.out.println("        - " + classes.get(i).getTANames()[0]);
-        //     System.out.println("        - " + classes.get(i).getTANames()[1]);
-        // }
+        // UNIT TEST to see if the class ojects store info about which students have been assigned to the class
+        System.out.println("-------------CLASSES AND THEIR TA's-------------");
+        for(int i = 0; i < classes.size(); i++) {
+            if(classes.get(i).getTAs()[0] != null){
+                System.out.println("CS: " + classes.get(i).getCategory() + " Section: " + classes.get(i).getSection() + " has the following TA's");
+                System.out.println("        - " + classes.get(i).getTAs()[0].getName() + " (" + classes.get(i).getTAs()[0].getTaType() + ")");
+                if(classes.get(i).getTAs()[1] != null) {
+                    System.out.println("        - " + classes.get(i).getTAs()[1].getName() + " (" + classes.get(i).getTAs()[1].getTaType() + ")");
+                }
+            }else {
+                System.out.println("CS: " + classes.get(i).getCategory() + " Section: " + classes.get(i).getSection() + " has NO TA's");
+            }
+        }
+        System.out.println();
 
     }
 
@@ -298,8 +298,12 @@ public class TAscheduler  {
     private static int numPossible(Schedule givenClass) {
     	int num = 0;
     	for(int i = 0; i < remainingStudents.size(); i++) {
-    		if(remainingStudents.get(i).hasTaken(givenClass) && remainingStudents.get(i).isFree(givenClass.getDates())) {
-    			num++;
+    		if(remainingStudents.get(i).canTA(givenClass) && remainingStudents.get(i).isFree(givenClass.getDates())) {
+    			if(givenClass.getHas492TA() && remainingStudents.get(i).getTaType() == 492) {
+                    continue;
+                }else{
+                    num++;
+                }
     		}
     	}
 		return num;
@@ -309,8 +313,12 @@ public class TAscheduler  {
     private static List<Student> possibleStudents(Schedule givenClass) {
     	List<Student> qualified = new ArrayList<>();
     	for(int i = 0; i < remainingStudents.size(); i++) {
-    		if(remainingStudents.get(i).hasTaken(givenClass) && remainingStudents.get(i).isFree(givenClass.getDates())) {
-    			qualified.add(remainingStudents.get(i));
+    		if(remainingStudents.get(i).canTA(givenClass) && remainingStudents.get(i).isFree(givenClass.getDates())) {
+                if(givenClass.getHas492TA() && remainingStudents.get(i).getTaType() == 492) {
+                    continue;
+                }else {
+                    qualified.add(remainingStudents.get(i));
+                }
     		}
     	}
 		return qualified;
@@ -322,12 +330,12 @@ public class TAscheduler  {
         int lowestValue = Integer.MAX_VALUE;
         for(int i = 0; i < possibleTAs.length; i++) {
             if(roundNum == 1) {
-                if(possibleTAs[i] < lowestValue && classes.get(i).getFirstTA() == false && possibleTAs[i] != 0) {
+                if(possibleTAs[i] < lowestValue && classes.get(i).hasFirstTA() == false && possibleTAs[i] != 0) {
                     lowestValue = possibleTAs[i];
                     index = i;
                 }
             }else {
-                if(possibleTAs[i] < lowestValue && classes.get(i).getSecondTA() == false && possibleTAs[i] != 0) {
+                if(possibleTAs[i] < lowestValue && classes.get(i).hasSecondTA() == false && possibleTAs[i] != 0) {
                     lowestValue = possibleTAs[i];
                     index = i;
                 }
@@ -341,18 +349,11 @@ public class TAscheduler  {
 
     //assigns a given student to a given class taking into account the first or second round
     private static void assignStudent(Student student, Schedule currClass, int roundNum) {
-        if(roundNum == 1){
-            currClass.setFirstTA(true);
-            currClass.setTAName(student.getName(), 1);
-        }else {
-            currClass.setSecondTA(true);
-            currClass.setTAName(student.getName(), 2);
-        }
+        currClass.setTA(student, roundNum);
         int studentID = student.getId();
         for(int i = 0; i < allStudents.size(); i++) {
             if(studentID == allStudents.get(i).getId()) {
                 allStudents.get(i).setAssignedClass(currClass);
-                allStudents.get(i).setIsAssigned(true);
             }
         }
         int removableIndex = 0;

@@ -1,4 +1,5 @@
 import java.util.HashMap;
+
 public class Student {
     // fields
     private String name;
@@ -79,15 +80,12 @@ public class Student {
         return this.isAssigned;
     }
 
-    public void setIsAssigned(boolean input) {
-        this.isAssigned = input;
-    }
-
     public Schedule getAssignedClass() {
         return this.assignedClass;
     }
 
     public void setAssignedClass(Schedule input) {
+        this.isAssigned = true;
         this.assignedClass = input;
     }
 
@@ -99,12 +97,20 @@ public class Student {
 		return dates;
 	}
 
-    // return true if a student has takened the given class
+    // return true if a student can TA the given class
+    public boolean canTA (Schedule givenClass) {
+        if(givenClass.getHas492TA() == true && this.taType == 492) {
+            return false;
+        }
+        boolean hasTaken = hasTaken(givenClass);
+        return hasTaken;
+    }
+
     public boolean hasTaken (Schedule givenClass) {
         if(classMap.containsKey(givenClass.getCategory())) {
             int classIndex = classMap.get(givenClass.getCategory());
             return taken[classIndex];
-        }else{
+        }else {
             return false;
         }
     }
@@ -130,7 +136,9 @@ public class Student {
             return this;
         }
         if(this.gradY == other.gradY) {
-            if (assignQValue(this.gradQ) < assignQValue(other.gradQ)) {
+            if(this.taType > other.taType){
+                return this;
+            }else if(this.taType == other.taType && assignQValue(this.gradQ) < assignQValue(other.gradQ)) {
                 return this;
             }
         }

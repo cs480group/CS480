@@ -4,9 +4,10 @@ public class Schedule
 	private String section;
 	private boolean firstTA;
 	private boolean secondTA;
-	private String[] TAs;
+	private boolean has492TA;
+	private Student[] TAs;
 	private int classIndex;
-	private boolean dates[][];
+	private boolean[][] dates;
 	
 	public Schedule(int category, String section, boolean[][] dates, int classIndex)
 	{
@@ -14,7 +15,8 @@ public class Schedule
 		this.section = section;
 		this.firstTA = false;
 		this.secondTA = false;
-		this.TAs = new String[2];
+		this.has492TA = false;
+		this.TAs = new Student[2];
 		this.dates = dates;
 		this.classIndex = classIndex;
 	}
@@ -27,31 +29,32 @@ public class Schedule
 		return section;
 	}
 
-	public boolean getFirstTA() {
+	public boolean hasFirstTA() {
 		return firstTA;
 	}
 
-	public void setFirstTA(boolean input) {
-		this.firstTA = input;
-	}
-
-	public boolean getSecondTA() {
+	public boolean hasSecondTA() {
 		return secondTA;
 	}
-
-	public void setSecondTA(boolean input) {
-		this.secondTA = input;
-	}
 	
-	public void setTAName(String name, int roundNum) {
+	public boolean getHas492TA() {
+		return has492TA;
+	}
+
+	public void setTA(Student input, int roundNum) {
 		if(roundNum == 1) {
-			TAs[0] = name;
+			TAs[0] = input;
+			this.firstTA = true;
 		}else {
-			TAs[1] = name;
+			TAs[1] = input;
+			this.secondTA = true;
+		}
+		if(input.getTaType() == 492){
+			this.has492TA = true;
 		}
 	}
 
-	public String[] getTANames() {
+	public Student[] getTAs() {
 		return TAs;
 	}
 
