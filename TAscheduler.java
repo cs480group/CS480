@@ -111,7 +111,6 @@ public class TAscheduler  {
             }
 
             assignStudent(bestOption, currClass, 1);
-            //allPossibleTas[currClass] = Integer.MAX_VALUE; DOESNT MATTER ANYMORE??
         }
 
         // Useful for Debugging round 1
@@ -144,9 +143,9 @@ public class TAscheduler  {
             }
 
             assignStudent(bestOption, currClass, 2);
-            //allPossibleTas[currClass] = Integer.MAX_VALUE; DOESNT MATTER ANYMORE??
         }
-        // Useful for debugging round 2
+
+        // Part 2 UNIT TEST to help track of the number of students before and after assignment rounds
         System.out.println("Second round done.");
         System.out.println("Number of allStudents: " + allStudents.size());
         System.out.println("Number of remainingStudents: " + remainingStudents.size());
@@ -173,6 +172,7 @@ public class TAscheduler  {
 
     }
 
+    //reads a file for schedule objects
     private static List<Schedule> readScheduleFromCSV(String fileName) {
         List<Schedule> classes = new ArrayList<>();
         Path pathToFile = Paths.get(fileName);
@@ -198,7 +198,7 @@ public class TAscheduler  {
         return classes;
     }
 
-    //identical to readScheduleFromCSV but for reading student info
+    //identical a file for Studnet objects
     private static List<Student> readStudentFromCSV(String fileName) {
         List<Student> students = new ArrayList<>();
         Path pathToFile = Paths.get(fileName);
@@ -339,6 +339,7 @@ public class TAscheduler  {
         return classes.get(index);
     }
 
+    //assigns a given student to a given class taking into account the first or second round
     private static void assignStudent(Student student, Schedule currClass, int roundNum) {
         if(roundNum == 1){
             currClass.setFirstTA(true);
@@ -363,9 +364,11 @@ public class TAscheduler  {
         remainingStudents.remove(removableIndex);
     }
 
+    //helper function that aids in the creation of 2d dates array for Schedule objects
+    //takes in the days a class is offered as a string
+    //returns a bool array representing if the class is offered on a given day 0-4 (mon-thurs)
     private static boolean[] getClassDays(String days) {
         boolean [] results = new boolean[4];
-        //System.out.println("Days given to getClassDays switch: " + days); //FOR DEBBUGGING
         switch(days) {
             case("M"): results[0] = true; break;
             case("MT"): results[0] = true; results[1] = true; break;
@@ -391,7 +394,6 @@ public class TAscheduler  {
         for(int i = 0; i < dayIndicator.length; i++) {
             if (dayIndicator[i] == true) {
                 result[i][timeSlot] = true;
-                //System.out.println("DayIndex : " + i + " timeSlot: " + timeSlot);  //FOR DEBUGGING
             }
         }
     }
