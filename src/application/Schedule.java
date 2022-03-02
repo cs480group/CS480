@@ -1,3 +1,5 @@
+package application;
+
 public class Schedule 
 {
 	private int category;

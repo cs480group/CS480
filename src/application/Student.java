@@ -1,3 +1,5 @@
+package application;
+
 import java.util.HashMap;
 
 public class Student {
