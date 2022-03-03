@@ -41,10 +41,11 @@ public class MainSceneController
 	
 	public void SetFinishedText(String str)  // for changing the text box text field
 	{ 
+		FinishedText.clear();
 		FinishedText.appendText("\n" + str + "\n"); 
 	}
 	
-	public void StudentPaths(ActionEvent event) throws IOException
+	public void StudentPaths(ActionEvent event) throws IOException // need to add requirments like only allowing csv files still
 	{
 		Stage stage = new Stage();
 		FileChooser fileChooser = new FileChooser();
@@ -62,9 +63,16 @@ public class MainSceneController
 		
 	}
 	
-	public void RunProgram(ActionEvent event) throws IOException
+	public void OutputCSV() // need to output still
+	{
+		
+	}
+	
+	public void RunProgram(ActionEvent event) throws IOException // runs whole algo 
 	{
 		MainAlgo(studentPath, schedulePath);
+		OutputCSV();
+		SetFinishedText("Program Is Complete");
 	}
 	 
 	public void MainAlgo(String studentPath, String schedulePath)
