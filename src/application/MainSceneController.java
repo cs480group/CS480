@@ -45,10 +45,14 @@ public class MainSceneController
 		FinishedText.appendText("\n" + str + "\n"); 
 	}
 	
-	public void StudentPaths(ActionEvent event) throws IOException // need to add requirments like only allowing csv files still
+	public void StudentPaths(ActionEvent event) throws IOException 
 	{
 		Stage stage = new Stage();
 		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().addAll(
+				new FileChooser.ExtensionFilter("CSV", "Students.csv")
+				//new FileChooser.ExtensionFilter("CSV", "students.csv")
+				);  // only allow student.csv
 		File selectedFile = fileChooser.showOpenDialog(stage);
 		studentPath = selectedFile.getPath();
 		
@@ -58,6 +62,8 @@ public class MainSceneController
 	{
 		Stage stage = new Stage();
 		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().addAll(
+				new FileChooser.ExtensionFilter("CSV", "Schedule.csv"));
 		File selectedFile = fileChooser.showOpenDialog(stage);
 		schedulePath = selectedFile.getPath();
 		
