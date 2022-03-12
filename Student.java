@@ -60,14 +60,6 @@ public class Student {
         return this.id; 
     }
 
-    public String getGradQ() {
-        return this.gradQ;
-    }
-
-    public int getGradY() {
-        return this.gradY;
-    }
-
     public int getTaType() {
         return this.taType;
     }
@@ -106,6 +98,7 @@ public class Student {
         return hasTaken;
     }
 
+    //returns true if a student has taken the class
     public boolean hasTaken (Schedule givenClass) {
         if(classMap.containsKey(givenClass.getCategory())) {
             int classIndex = classMap.get(givenClass.getCategory());
@@ -129,8 +122,7 @@ public class Student {
         return false;
     }
 
-    //@Override
-    // returns the student who graduates sooner
+    // returns the student who graduates sooner with a slight preference for 492 over 392
     public Student compareTo(Student other) {
         if(this.gradY > other.gradY) {
             return this;
@@ -145,16 +137,13 @@ public class Student {
         return other;
     }
 
+    //helper function to give a value to grad quarter when two students have the same grad year
     private int assignQValue(String gradQ) {
         switch(gradQ) {
-            case "Winter":
-                return 1;
-            case "Spring":
-                return 2;
-            case "Summer":
-                return 3;
-            case "Fall":
-                return 4;
+            case "Winter": return 1;
+            case "Spring": return 2;
+            case "Summer": return 3;
+            case "Fall": return 4;
         }
         return 0;
 

@@ -57,8 +57,8 @@ public class TAscheduler  {
         // }
 
         // // UNIT TEST to check that canTA works and that the student objects are uniform
-        // for(int i = 0; i < numClassesNoSec; i++){
-        //     System.out.println(allStudents.get(0).canTA(i)); 
+        // for(int i = 0; i < classes.size(); i++){
+        //     System.out.println(allStudents.get(0).canTA(classes.get(i))); 
         // }
 
         // // UNIT TEST to check that possibleStudents works 
@@ -88,13 +88,12 @@ public class TAscheduler  {
 
             //gets the class index that has the lowest number of possible TA's
             Schedule currClass = classSelect(allPossibleTas, 1);
-            
             //if there are no more classes to assign a first TA to, break
             if(currClass == null) {
                 break;
             }
 
-            //gets list of students for the current class, and finds the "best" student to assign
+            //gets list of students for the current class, and finds the "best" student to assign, then assigns it
             currCandidates = possibleStudents(currClass);
             Student bestOption = currCandidates.get(0);
             if(currCandidates.size() != 1){
@@ -102,7 +101,6 @@ public class TAscheduler  {
                     bestOption = bestOption.compareTo(currCandidates.get(i));
                 }
             }
-
             assignStudent(bestOption, currClass, 1);
         }
 
@@ -118,15 +116,11 @@ public class TAscheduler  {
                 allPossibleTas[i] = numPossible(classes.get(i));
             }
 
-            //gets the class index that has the lowest number of possible TA's
             Schedule currClass = classSelect(allPossibleTas, 2);
-            
-            //if there are no more classes to assign a first TA to, break
             if(currClass == null) {
                 break;
             }
 
-            //gets list of students for the current class, and finds the "best" student to assign
             currCandidates = possibleStudents(currClass);
             Student bestOption = currCandidates.get(0);
             if(currCandidates.size() != 1){
@@ -134,7 +128,6 @@ public class TAscheduler  {
                     bestOption = bestOption.compareTo(currCandidates.get(i));
                 }
             }
-
             assignStudent(bestOption, currClass, 2);
         }
 
@@ -168,8 +161,6 @@ public class TAscheduler  {
                 System.out.println("CS: " + classes.get(i).getCategory() + " Section: " + classes.get(i).getSection() + " has NO TA's");
             }
         }
-        System.out.println();
-
     }
 
     //reads a file for schedule objects
@@ -198,22 +189,20 @@ public class TAscheduler  {
         return classes;
     }
 
-    //identical a file for Studnet objects
+    //nearly identical to readSchedule but for Studnet objects
     private static List<Student> readStudentFromCSV(String fileName) {
         List<Student> students = new ArrayList<>();
         Path pathToFile = Paths.get(fileName);
 
         try (BufferedReader br = Files.newBufferedReader(pathToFile, StandardCharsets.US_ASCII)){
-            //reads first line, then skips over it
+            //skisps the first two lines
             String line = br.readLine();
             line = br.readLine();
             line = br.readLine();
 
             while (line != null) {
-                //System.out.println(line) //for debugging
-
                 //deliminates the data using ","
-                String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1); //for debugging
+                String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
                 //creates a schedule object form the data using helper method
                 Student student = createStudentObj(data);
@@ -273,7 +262,6 @@ public class TAscheduler  {
         if (data[7] == "Yes") {
             eburg = true;
         }
-
         for (int i = 0; i < dates.length; i++) {
             for (int k = 0; k < dates[i].length; k++) {
                 if (data[index].equals("Open")) {
@@ -326,7 +314,7 @@ public class TAscheduler  {
 
     //returns the Schedule object for the class that has the lowest amount of TA's avail and hasnt been assigned in the given round
     private static Schedule classSelect(int[] possibleTAs, int roundNum) {
-        int index = 0;
+        int index = 0; 
         int lowestValue = Integer.MAX_VALUE;
         for(int i = 0; i < possibleTAs.length; i++) {
             if(roundNum == 1) {
