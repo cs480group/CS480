@@ -2,7 +2,7 @@
 
 ## How to build the project
 
-The project requires only one library that is not a part of java; The JavafxSDK. This library we have included within our github but only the windows version. If you need a MacOS version you will need to download it from https://gluonhq.com/products/javafx/. The other thing needed when compiling the project from source is to set vm arguments at runtime; 
+The project requires only one library that is not a part of java; The JavafxSDK. This library we have included within our github but only the windows version. If you need a MacOS version you will need to download it from https://gluonhq.com/products/javafx/. The other thing needed when compiling the project from source is to set vm arguments at runtime; special note : to build the project in Eclipse, you must create a new javaFX project. 
 Example:
  --module-path "C:\Users\jason\Documents\GitHub\CS480\javafx-sdk-17.0.1(windows)\lib" --add-modules=javafx.controls,javafx.fxml
 where the first portion needs to be the file path to the sdk lib folder.
