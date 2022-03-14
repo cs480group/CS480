@@ -11,7 +11,7 @@ When the program is finished a new CSV file will be placed within the same folde
 
 # Current bugs
 
-If One or more required csv files are not inputted then the program will output an empty csv file.
-If there is already a csv file named “TA_Assignment_File.csv” in the same directory as the exe file it will be overwritten.
-The student and scheduler files need to be formatted in a specific way otherwise it will not work
+- If One or more required csv files are not inputted then the program will output an empty csv file.
+- If there is already a csv file named “TA_Assignment_File.csv” in the same directory as the exe file it will be overwritten.
+- The student and scheduler files need to be formatted in a specific way otherwise it will not work
 
