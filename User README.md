@@ -1,5 +1,7 @@
 # User ReadMe
 
+Download the zip for the repository and inside the folder named "program" the EXE file named "TAsceduler.exe" can be found.
+
 To use the program launch it with the TAscheduler.exe
 
 You must enter both a Student.csv file and a Schedule.csv file which MUST have the names student and schedule respectively to ensure that inputs are appropriate. 
