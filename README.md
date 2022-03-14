@@ -1,5 +1,4 @@
-# Developer README
-# The following information details how our program operates
+# Developer ReadMe: The following information details how the program operates
 
 ## Running the program
 
