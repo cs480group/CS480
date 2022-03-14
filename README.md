@@ -77,15 +77,12 @@ After the two assignment rounds there are a few more unit tests and then the inf
 
 -RunProgram- what happens when run button is clicked; calls MainAlgo > OutputCSV > SetFinishedText
 
-## Installer and Executable
+## Executable
 
--TAscheduler-1.0.exe - Installer to install to your computer
--TAscheduler.zip - zip file containing the executable to run without installing the program
-- source_code.zip - zip file containing the source code and a script to make a new installer
+- The EXE can be found within the program folder * all files in that exe folder need to be with the exe *
 
 ## Other notes
-The program will create an empty csv file if one or more inputs are not entered.
-The program will only change messages once when ran.
-The program will overwrite any csv files with the name “TA_Assignment_File” within the exe directory.
-The student and scheduler files need to be formatted in a specific way otherwise it will not work
-
+- The program will create an empty csv file if one or more inputs are not entered.
+- The program will only change messages once when ran.
+- The program will overwrite any csv files with the name “TA_Assignment_File” within the exe directory.
+- The student and scheduler files need to be formatted in a specific way otherwise it will not work
