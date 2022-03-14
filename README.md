@@ -2,7 +2,7 @@
 
 ## How to build the project
 
-The project requires only one library that is not a part of java; The JavafxSDK. This library we have included within our github but only the windows version. If you need a MacOS version you will need to download it from https://gluonhq.com/products/javafx/. The other thing needed when compiling the project from source is to set vm arguments at runtime; 
+The project requires only one library that is not a part of java; The JavafxSDK. This library we have included within our github but only the windows version. If you need a MacOS version you will need to download it from https://gluonhq.com/products/javafx/. The other thing needed when compiling the project from source is to set vm arguments at runtime; special note : to build the project in Eclipse, you must create a new javaFX project. 
 Example:
  --module-path "C:\Users\jason\Documents\GitHub\CS480\javafx-sdk-17.0.1(windows)\lib" --add-modules=javafx.controls,javafx.fxml
 where the first portion needs to be the file path to the sdk lib folder.
@@ -12,11 +12,21 @@ There are three java files that are classes that we use to execute our assignmen
 
 ## The information and methods in the Student class are as follows
 
-The Student class is designed to make manipulating student information from the given student.csv file easier. In the student class there are attributes for name, student, id, graduating quarter, graduating year, teacher assistant type,  and whether the student is in Ellensburg or not. All these fields have associated getter methods. There is a 2d boolean array that represents a student’s availability from Monday to Friday from 8 AM to 3 PM. 
+The Student class is designed to make manipulating student information from the given student.csv file easier. In the student class there are attributes for name(string), student id (int), graduating quarter(string), graduating year(int), teacher assistant type(int),  and whether the student is in Ellensburg or not(boolean). All these fields have associated getter methods. There is a 2d boolean array that represents a student’s availability from Monday to Friday from 8 AM to 3 PM. 
 
-Also provided are the attributes taken, isAssigned, and assignedClass;these attributes are primarily used during the TA assignment process.Taken will return true if a student has taken a given class. isAssigned return true if a student has been assigned a class to TA for and assignedClass returns siad class. Included in the student class is a hashmap for convenient organization of the classes.
+Also provided are the attributes taken(boolean array), isAssigned(boolean), and assignedClass(Schedule);these attributes are primarily used during the TA assignment process.Taken will return true if a student has taken a given class. isAssigned return true if a student has been assigned a class to TA for and assignedClass returns siad class. Included in the student class is a hashmap for convenient organization of the classes.
 
-In the student object, a compareTo function returns the student who has the earlier graduation. 
+Besides the standard getters for the attributes, there are a few other methods:
+
+-canTA is a method whose input is a Schedule object. It then checks if the class has a 492TA and if the student is a 492 TA and uses a helper method hasTaken to return true if a student canTA the class and false otherwise. 
+
+-hasTaken is a helper method for canTA whose input is a Schedule object. It checks if the student has taken a class using the hashmap and the taken attribute and returns true if they have taken the class and false if not. 
+
+-isFree takes in a 2d boolean array representing a Schedule objects 2d dates array. It checks the 2d dates array attribute for the class that represents the students availability with the given 2d array for the class time and returns true if the student is available when the class is offered or false if not.
+
+-compareTo takes in a Student object "other" as input and compares this instance of a Student to the other one. Returns this or other depending on whichever is determined to be a higher priority based off of checks that take into consideration grad year, grad quarter, and TA type.
+
+-assignQValue takes in a string representation of the grad quarter and uses a switch and case statement to return an integer value representing the quarter
 
 ## The information and methods in the Schedule class are as follows
 
